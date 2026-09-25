@@ -4,118 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ObraFlow — Gestão MCMV · Protótipo Interativo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter','Segoe UI','Arial','sans-serif'] },
+      colors: {
+        primary: '#009EF7', 'primary-dark': '#009EF7', 'primary-light': '#E1F0FF',
+        ink: '#181C32', body: '#5E6278', muted: '#7E8299', faint: '#A1A5B7',
+        line: '#EFF2F5', page: '#F5F8FA', card: '#FFFFFF',
+        success: '#50CD89', 'success-light': '#E8FFF3',
+        warning: '#FFC700', 'warning-light': '#FFF8DD',
+        danger: '#F1416C', 'danger-light': '#FFE7E3',
+        purple: '#7239EA', 'purple-light': '#F3E7FF',
+        teal: '#0BB7C4', 'teal-light': '#DCFBF4',
+      },
+      boxShadow: {
+        card: '0 0 20px 0 rgba(76,87,125,0.02)',
+        card2: '0 0 30px 0 rgba(76,87,125,0.06)',
+      },
+      borderRadius: { xl2: '0.875rem' },
+    }
+  }
+}
+</script>
 <style>
-:root{
-  --bg:#0b1220;--panel:#111a2e;--panel2:#0e1626;--line:#1e2a44;--line2:#27365a;
-  --txt:#e8edf7;--mut:#8fa0bd;--dim:#5d6f92;
-  --acc:#3b82f6;--acc2:#60a5fa;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--info:#a78bfa;--cy:#22d3ee;
-  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--txt);font:14px/1.55 -apple-system,'Segoe UI',Roboto,Arial,sans-serif;padding-bottom:60px}
-.wrap{max-width:1240px;margin:0 auto;padding:0 18px}
-header{background:linear-gradient(135deg,#0d1730 0%,#0b1220 70%);border-bottom:1px solid var(--line);padding:16px 0 14px}
-.brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.logo{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff}
-h1{font-size:19px;font-weight:700;letter-spacing:.2px}
-.sub{color:var(--mut);font-size:12.5px;margin-top:2px}
-.userchip{margin-left:auto;display:flex;gap:8px;align-items:center}
-.chip{border:1px solid var(--line2);border-radius:999px;padding:4px 12px;font-size:12px;color:var(--mut);background:var(--panel)}
-.chip b{color:var(--txt)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin:18px 0 6px}
-.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
-.kpi .v{font-size:22px;font-weight:800;font-family:var(--mono)}
-.kpi .l{font-size:11.5px;color:var(--mut);margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
-.kpi .d{font-size:11.5px;margin-top:4px}
-.up{color:var(--ok)}.down{color:var(--bad)}.neu{color:var(--dim)}
-nav.tabs{display:flex;gap:6px;margin:16px 0 0;flex-wrap:wrap}
-.tab{padding:9px 16px;border-radius:9px 9px 0 0;border:1px solid transparent;color:var(--mut);cursor:pointer;font-weight:600;font-size:13.5px;user-select:none}
-.tab.on{background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel);color:var(--txt)}
-.tab:hover{color:var(--txt)}
-main{border-top:1px solid var(--line);padding-top:18px}
-h2{font-size:15px;margin:4px 0 12px;display:flex;align-items:center;gap:8px}
-h2 .pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:#312e5f;color:#c4b5fd;letter-spacing:.5px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-.card h3{font-size:14px;margin-bottom:2px}
-.card .spe{font-size:12px;color:var(--mut)}
-.meta{display:flex;gap:14px;margin:10px 0 8px;font-size:12px;color:var(--mut);flex-wrap:wrap}
-.meta b{color:var(--txt)}
-.bar{height:9px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden;display:flex;margin:8px 0 4px}
-.bar i{display:block;height:100%}
-.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:6px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:99px;margin-right:5px}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
-select,input[type=text]{background:var(--panel2);border:1px solid var(--line2);color:var(--txt);border-radius:8px;padding:7px 10px;font-size:13px;outline:none}
-input[type=text]{min-width:200px}
-table{width:100%;border-collapse:collapse;font-size:12.8px}
-th{color:var(--mut);text-align:left;font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;padding:8px 9px;border-bottom:1px solid var(--line2);white-space:nowrap}
-td{padding:8px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
-tr:hover td{background:#14203a}
-.st{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;cursor:pointer;border:1px solid transparent}
-.st:hover{filter:brightness(1.25)}
-.s-disp{background:#12233c;color:#7fb4ff}.s-res{background:#3a2f14;color:#fbbf24}.s-rg{background:#16324a;color:#38bdf8}
-.s-ctr{background:#312e5f;color:#c4b5fd}.s-ass{background:#123524;color:#4ade80}.s-rep{background:#0f3d3e;color:#2dd4bf}
-.trend{font-family:var(--mono);font-size:12px}
-.tblwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.fun{display:grid;gap:8px;margin-top:6px}
-.frow{display:grid;grid-template-columns:110px 1fr 118px;gap:10px;align-items:center;font-size:12.5px}
-.fbar{background:var(--panel2);border:1px solid var(--line);border-radius:6px;height:22px;overflow:hidden}
-.fbar i{display:block;height:100%;border-radius:5px}
-.fin{display:flex;justify-content:space-between;font-size:12.5px;margin:7px 0 3px}
-.fin b{font-family:var(--mono)}
-.note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--mut);margin:16px 0}
-.note b{color:var(--txt)}
-footer{position:fixed;bottom:0;left:0;right:0;background:#0a101e;border-top:1px solid var(--line);padding:9px 18px;font-size:12px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap;z-index:5}
-footer b{color:var(--mut)}
-.toast{position:fixed;bottom:54px;right:18px;background:#132449;border:1px solid var(--acc);color:#dbe7ff;padding:10px 14px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:320px}
-.toast.on{opacity:1}
-@media(max-width:720px){
-  .kpi .v{font-size:18px}
-  .frow{grid-template-columns:86px 1fr 96px;font-size:11.5px}
-  .userchip{display:none}
-  td,th{padding:7px 7px;font-size:12px}
-}
+  body{-webkit-font-smoothing:antialiased}
+  .sb-item{display:flex;align-items:center;gap:.65rem;padding:.62rem .9rem;margin:.1rem .6rem;border-radius:.475rem;color:#7E8299;font-weight:500;font-size:.9rem;cursor:pointer;transition:.15s}
+  .sb-item:hover{color:#181C32;background:#F5F8FA}
+  .sb-item.on{background:#E1F0FF;color:#009EF7;font-weight:600}
+  .badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:.475rem;padding:.28rem .6rem;font-size:.74rem;font-weight:600;line-height:1;cursor:pointer;border:none;transition:.15s}
+  .badge:hover{filter:brightness(.96)}
+  table.dt th{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#A1A5B7;font-weight:600;padding:.7rem .8rem;text-align:left;background:#F9FAFB;border-bottom:1px solid #EFF2F5;white-space:nowrap}
+  table.dt td{padding:.66rem .8rem;border-bottom:1px solid #EFF2F5;font-size:.83rem;color:#5E6278;white-space:nowrap}
+  table.dt tr:hover td{background:#F9FAFB}
+  .mono{font-variant-numeric:tabular-nums}
+  .bar{height:6px;border-radius:99px;overflow:hidden;display:flex;background:#EFF2F5}
+  select,input[type=text]{background:#fff;border:1px solid #EFF2F5;border-radius:.475rem;padding:.5rem .75rem;font-size:.83rem;color:#5E6278;outline:none;box-shadow:0 0 20px 0 rgba(76,87,125,.02)}
+  select:focus,input:focus{border-color:#009EF7}
+  .toast{position:fixed;bottom:1.2rem;right:1.2rem;background:#181C32;color:#fff;border-radius:.6rem;padding:.7rem 1rem;font-size:.83rem;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:60;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .toast.on{opacity:1;transform:none}
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#D5D8E1;border-radius:9px}
 </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <div class="brand">
-      <div class="logo">OF</div>
+<body class="bg-page text-body font-sans">
+<div class="flex min-h-screen">
+
+  <!-- ======= SIDEBAR ======= -->
+  <aside class="hidden lg:flex flex-col w-[248px] shrink-0 bg-white border-r border-line fixed inset-y-0 z-30">
+    <div class="flex items-center gap-3 h-[66px] px-6 border-b border-line">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-purple text-white flex items-center justify-center font-extrabold text-sm shadow-card2">OF</div>
       <div>
-        <h1>ObraFlow · Gestão de Obras e Vendas MCMV</h1>
-        <div class="sub">Construtora &amp; Incorporadora · Paraná · <span id="clock"></span></div>
-      </div>
-      <div class="userchip">
-        <span class="chip">👤 <b>Coord. Comercial</b> · perfil Vendas</span>
-        <span class="chip">🔒 permissões por perfil</span>
+        <div class="font-extrabold text-ink text-[15px] leading-tight">ObraFlow</div>
+        <div class="text-[11px] text-faint">Gestão MCMV</div>
       </div>
     </div>
-    <div class="kpis" id="kpis"></div>
-    <nav class="tabs" id="tabs">
-      <div class="tab on" data-t="vendas">🏠 Vendas &amp; Estoque</div>
-      <div class="tab" data-t="empreend">🏢 Empreendimentos &amp; SPEs</div>
-      <div class="tab" data-t="fin">📊 Fase 2 · Orçado × Realizado</div>
+    <nav class="flex-1 py-3 overflow-y-auto" id="sbnav">
+      <div class="px-6 pt-2 pb-1 text-[10.5px] font-semibold tracking-wider text-faint uppercase">Operação</div>
+      <div class="sb-item on" data-t="vendas">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+        Vendas &amp; Estoque
+      </div>
+      <div class="sb-item" data-t="empreend">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/><path d="M9 10h.01M15 10h.01"/></svg>
+        Empreendimentos &amp; SPEs
+      </div>
+      <div class="sb-item" data-t="fin">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg>
+        Fase 2 · Orçado × Realizado
+        <span class="ml-auto badge bg-purple-light text-purple">PRÉVIA</span>
+      </div>
+      <div class="px-6 pt-5 pb-1 text-[10.5px] font-semibold tracking-wider text-faint uppercase">Conta</div>
+      <div class="sb-item pointer-events-none opacity-60"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c.8-4 4-5.5 7-5.5s6.2 1.5 7 5.5"/></svg>Coord. Comercial</div>
+      <div class="sb-item pointer-events-none opacity-60"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 118 0v3"/></svg>Perfil: Vendas (permissões)</div>
     </nav>
+    <div class="p-4 m-3 mt-0 rounded-xl bg-page border border-line text-[11.5px] text-muted leading-relaxed">
+      <b class="text-ink">Protótipo interativo.</b> Clique num status da tabela para avançar a unidade no funil. Dados 100% fictícios.
+    </div>
+  </aside>
+
+  <!-- ======= MAIN ======= -->
+  <div class="flex-1 lg:ml-[248px]">
+    <!-- header -->
+    <header class="bg-white border-b border-line sticky top-0 z-20">
+      <div class="flex items-center gap-3 px-4 sm:px-6 h-[66px]">
+        <div class="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple text-white flex items-center justify-center font-extrabold text-[11px]">OF</div>
+        <div class="min-w-0">
+          <div class="text-[11px] text-faint leading-none mb-.5">Aplicação / <span class="text-muted">Protótipo</span></div>
+          <h1 id="pgtitle" class="font-bold text-ink text-[16px] leading-tight truncate">Painel de Vendas &amp; Estoque</h1>
+        </div>
+        <div class="ml-auto flex items-center gap-2 sm:gap-3">
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-[12px] text-muted bg-success-light text-success px-2.5 py-1.5 rounded-lg font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>Operacional</span>
+          <span id="clock" class="hidden md:block text-[12px] text-faint mono"></span>
+          <div class="w-9 h-9 rounded-full bg-primary-light text-primary flex items-center justify-center font-bold text-[13px]">CC</div>
+        </div>
+      </div>
+      <!-- mobile tabs -->
+      <div class="lg:hidden flex gap-1 px-3 pb-2 overflow-x-auto" id="mtabs">
+        <div class="sb-item on !m-0 text-[13px]" data-t="vendas">Vendas</div>
+        <div class="sb-item !m-0 text-[13px]" data-t="empreend">Empreendimentos</div>
+        <div class="sb-item !m-0 text-[13px]" data-t="fin">Fase 2</div>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-6 max-w-[1360px] mx-auto" id="main"></main>
+
+    <footer class="px-6 py-4 text-[11.5px] text-faint border-t border-line bg-white">
+      Protótipo ObraFlow · produção: Node.js + PostgreSQL · código no GitHub da empresa · acesso por navegador e celular · perfis de usuário com permissões · documentação entregue
+    </footer>
   </div>
-</header>
-<main class="wrap" id="main"></main>
+</div>
 <div class="toast" id="toast"></div>
-<footer>
-  <span><b>Protótipo interativo</b> — dados 100% fictícios</span>
-  <span><b>Clique num status</b> para avançar a unidade no funil</span>
-  <span><b>Produção:</b> Node.js + PostgreSQL · código no GitHub da empresa · acesso por navegador e celular</span>
-</footer>
+
 <script>
 "use strict";
-// ---- dataset (fictício, padrão MCMV Paraná) ----
+/* ---- dataset (fictício, padrão MCMV Paraná) ---- */
 const EMP = [
- {id:"ARA3", nome:"Residencial Araucária III", cidade:"Curitiba · PR", spe:"Araucária III SPE Ltda.", cnpj:"42.918.337/0001-20", caixa:"Caixa Econômica", unidades:24, torres:"1 torre · 4 pavimentos", etapa:"Obra 78%",
+ {id:"ARA3", nome:"Residencial Araucária III", cidade:"Curitiba · PR", spe:"Araucária III SPE Ltda.", cnpj:"42.918.337/0001-20", caixa:"Caixa Econômica", unidades:24, torres:"1 torre · 4 pavimentos", etapa:"Obra 78%", etapaCls:"text-success bg-success-light",
   und: gerarUnidades(24, 0.62)},
- {id:"SAB2", nome:"Vila Sabiá II", cidade:"Maringá · PR", spe:"Vila Sabiá II Patrimônio de Afetação S.A.", cnpj:"31.204.886/0001-14", caixa:"COHAPAR-PR", unidades:18, torres:"2 blocos · 3 pavimentos", etapa:"Obra 45%",
+ {id:"SAB2", nome:"Vila Sabiá II", cidade:"Maringá · PR", spe:"Vila Sabiá II Patrimônio de Afetação S.A.", cnpj:"31.204.886/0001-14", caixa:"COHAPAR-PR", unidades:18, torres:"2 blocos · 3 pavimentos", etapa:"Obra 45%", etapaCls:"text-warning bg-warning-light",
   und: gerarUnidades(18, 0.38)},
- {id:"BAR1", nome:"Bosque do Barigui I", cidade:"Fazenda Rio Grande · PR", spe:"Barigui Habitação SPE Ltda.", cnpj:"51.377.902/0001-08", caixa:"Caixa Econômica", unidades:16, torres:"1 bloco · 4 pavimentos", etapa:"Licenciado · lançamento",
+ {id:"BAR1", nome:"Bosque do Barigui I", cidade:"Fazenda Rio Grande · PR", spe:"Barigui Habitação SPE Ltda.", cnpj:"51.377.902/0001-08", caixa:"Caixa Econômica", unidades:16, torres:"1 bloco · 4 pavimentos", etapa:"Licenciado · lançamento", etapaCls:"text-primary bg-primary-light",
   und: gerarUnidades(16, 0.12)},
 ];
 function gerarUnidades(n, frac){
@@ -139,80 +152,106 @@ function gerarUnidades(n, frac){
   return out;
 }
 const STS=["Disponível","Reserva","RG","Contrato","Assinado","Repasse"];
-const STCL={"Disponível":"s-disp","Reserva":"s-res","RG":"s-rg","Contrato":"s-ctr","Assinado":"s-ass","Repasse":"s-rep"};
-const STCOR={"Disponível":"#3b82f6","Reserva":"#f59e0b","RG":"#38bdf8","Contrato":"#a78bfa","Assinado":"#4ade80","Repasse":"#2dd4bf"};
+const STBADGE={"Disponível":"bg-primary-light text-primary","Reserva":"bg-warning-light text-[#B57E00]","RG":"bg-teal-light text-teal","Contrato":"bg-purple-light text-purple","Assinado":"bg-success-light text-success","Repasse":"bg-[#E8FFF3] text-[#0BB7C4]"};
+const STCOR={"Disponível":"#009EF7","Reserva":"#FFC700","RG":"#0BB7C4","Contrato":"#7239EA","Assinado":"#50CD89","Repasse":"#0BB7C4"};
 const money=v=>v>=1e6?("R$ "+(v/1e6).toFixed(2).replace(".",",")+" mi"):("R$ "+(v/1000).toFixed(1).replace(".",",")+" mil");
 const money2=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 const todas=()=>EMP.flatMap(e=>e.und.map(u=>Object.assign({emp:e.nome,empId:e.id,spe:e.spe,fin:e.caixa},u)));
 
+const ICON={
+ unidades:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>',
+ vendidas:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg>',
+ vgv:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M8 7h6a3 3 0 010 6H9a3 3 0 000 6h7"/></svg>',
+ disp:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>',
+ rep:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>'};
+function statCard(icon,tile,v,l,d,dcls){
+  return `<div class="bg-card border border-line rounded-xl2 shadow-card p-4 flex items-start gap-3.5">
+    <div class="w-[46px] h-[46px] rounded-xl ${tile} flex items-center justify-center shrink-0">${icon}</div>
+    <div class="min-w-0">
+      <div class="text-[22px] font-extrabold text-ink leading-tight mono">${v}</div>
+      <div class="text-[11px] uppercase tracking-wider text-faint font-semibold mt-.5">${l}</div>
+      <div class="text-[11.5px] mt-1 font-medium ${dcls||'text-muted'}">${d}</div>
+    </div></div>`;
+}
 function renderKPIs(){
   const us=todas(), total=us.length;
   const vend=us.filter(u=>u.st!=="Disponível"&&u.st!=="Reserva").length;
   const disp=us.filter(u=>u.st==="Disponível").length;
   const vgv=us.filter(u=>u.st!=="Disponível").reduce((s,u)=>s+u.valor,0);
   const repPend=us.filter(u=>u.st==="Assinado").length;
-  document.getElementById("kpis").innerHTML=`
-  <div class="kpi"><div class="v">${total}</div><div class="l">Unidades totais</div><div class="d neu">3 empreendimentos · 3 SPEs</div></div>
-  <div class="kpi"><div class="v">${vend}</div><div class="l">Vendidas (contrato+)</div><div class="d up">${(vend/total*100).toFixed(0)}% do estoque</div></div>
-  <div class="kpi"><div class="v">${disp}</div><div class="l">Disponíveis</div><div class="d neu">${us.filter(u=>u.st==="Reserva").length} em reserva</div></div>
-  <div class="kpi"><div class="v" style="font-size:17px">${money(vgv)}</div><div class="l">VGV contratado</div><div class="d up">mix 2 e 3 dorm · MCMV faixa 1/2</div></div>
-  <div class="kpi"><div class="v">${repPend}</div><div class="l">Repasse em análise</div><div class="d" style="color:var(--warn)">Caixa + COHAPAR-PR</div></div>`;
+  document.getElementById("kpis").innerHTML=
+   statCard(ICON.unidades,"bg-primary-light text-primary",total,"Unidades totais","3 empreendimentos · 3 SPEs","text-muted")+
+   statCard(ICON.vendidas,"bg-success-light text-success",vend,"Vendidas (contrato+)",(vend/total*100).toFixed(0)+"% do estoque","text-success")+
+   statCard(ICON.vgv,"bg-purple-light text-purple",money(vgv),"VGV contratado","mix 2 e 3 dorm · faixa 1/2","text-muted")+
+   statCard(ICON.rep,"bg-warning-light text-[#B57E00]",repPend,"Repasse em análise","Caixa + COHAPAR-PR","text-[#B57E00]");
 }
 function renderVendas(){
+  document.getElementById("pgtitle").textContent="Painel de Vendas & Estoque";
   const us=todas();
   const cnt={}; STS.forEach(s=>cnt[s]=0); us.forEach(u=>cnt[u.st]++);
   const maxc=Math.max(...STS.map(s=>cnt[s]));
-  const el=document.getElementById("main");
-  el.innerHTML=`
-  <h2>Painel de Vendas · Funil por Status <span class="pill">MVP · FASE 1</span></h2>
-  <div class="grid" style="grid-template-columns:minmax(280px,1fr) 2fr">
-    <div class="card">
-      <h3>Funil consolidado</h3>
-      <div class="fun">${STS.map(s=>`
-        <div class="frow"><span style="color:var(--mut)">${s}</span>
-        <div class="fbar"><i style="width:${(cnt[s]/maxc*100).toFixed(0)}%;background:${STCOR[s]}"></i></div>
-        <span class="trend" style="color:var(--txt)">${cnt[s]} un · ${(cnt[s]/us.length*100).toFixed(0)}%</span></div>`).join("")}
+  document.getElementById("main").innerHTML=`
+  <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5" id="kpis"></div>
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-5">
+    <div class="bg-card border border-line rounded-xl2 shadow-card p-5">
+      <h3 class="font-bold text-ink text-[14px] mb-4">Funil consolidado de vendas</h3>
+      <div class="space-y-3">${STS.map(s=>`
+        <div>
+          <div class="flex justify-between text-[12.5px] mb-1"><span class="text-muted font-medium">${s}</span><span class="mono font-semibold text-ink">${cnt[s]} un · ${(cnt[s]/us.length*100).toFixed(0)}%</span></div>
+          <div class="bar"><i style="width:${(cnt[s]/maxc*100).toFixed(0)}%;background:${STCOR[s]};display:block;height:100%"></i></div>
+        </div>`).join("")}
       </div>
-      <div class="note" style="margin:14px 0 0">Status avança no clique: <b>Reserva → RG → Contrato → Assinado → Repasse</b>. No sistema real, cada mudança grava auditoria (usuário, data/hora) e dispara alerta para o comercial.</div>
+      <div class="mt-4 p-3 rounded-lg bg-page border border-line text-[12px] text-muted leading-relaxed">
+        Status avança no clique: <b class="text-ink">Reserva → RG → Contrato → Assinado → Repasse</b>. Em produção, cada mudança grava auditoria (usuário, data/hora) e notifica o comercial.
+      </div>
     </div>
-    <div class="card" style="overflow:visible">
-      <h3>Estoque por empreendimento</h3>
+    <div class="bg-card border border-line rounded-xl2 shadow-card p-5 xl:col-span-2">
+      <h3 class="font-bold text-ink text-[14px] mb-4">Estoque por empreendimento</h3>
       ${EMP.map(e=>{
         const c={}; STS.forEach(s=>c[s]=0); e.und.forEach(u=>c[u.st]++);
-        return `<div style="margin-bottom:14px">
-          <div class="fin"><span><b>${e.nome}</b> <span style="color:var(--dim)">· ${e.spe}</span></span><span class="trend">${e.und.length} un · ${e.caixa}</span></div>
-          <div class="bar">${STS.filter(s=>c[s]>0).map(s=>`<i style="width:${c[s]/e.und.length*100}%;background:${STCOR[s]}" title="${s}: ${c[s]}"></i>`).join("")}</div>
-          <div class="legend">${STS.filter(s=>c[s]>0).map(s=>`<span><span class="dot" style="background:${STCOR[s]}"></span>${s} ${c[s]}</span>`).join("")}</div>
+        return `<div class="mb-5 last:mb-1">
+          <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+            <div class="font-semibold text-ink text-[13.5px]">${e.nome} <span class="text-faint font-normal">· ${e.spe}</span></div>
+            <div class="text-[12px] text-muted mono">${e.und.length} un · ${e.caixa}</div>
+          </div>
+          <div class="bar h-2">${STS.filter(s=>c[s]>0).map(s=>`<i style="width:${c[s]/e.und.length*100}%;background:${STCOR[s]};display:block;height:100%" title="${s}: ${c[s]}"></i>`).join("")}</div>
+          <div class="flex flex-wrap gap-x-3.5 gap-y-1 mt-2 text-[11px] text-muted">${STS.filter(s=>c[s]>0).map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:${STCOR[s]}"></span>${s} <b class="text-ink">${c[s]}</b></span>`).join("")}</div>
         </div>`;}).join("")}
     </div>
   </div>
-  <h2 style="margin-top:22px">Controle de Vendas por Unidade <span class="pill">CLIQUE NO STATUS PARA AVANÇAR</span></h2>
-  <div class="filters">
-    <select id="fEmp"><option value="">Todos os empreendimentos</option>${EMP.map(e=>`<option>${e.nome}</option>`).join("")}</select>
-    <select id="fSt"><option value="">Todos os status</option>${STS.map(s=>`<option>${s}</option>`).join("")}</select>
-    <select id="fFin"><option value="">Caixa + COHAPAR</option><option>Caixa Econômica</option><option>COHAPAR-PR</option></select>
-    <input type="text" id="fQ" placeholder="Buscar cliente, contrato, unidade…">
-  </div>
-  <div class="tblwrap"><table>
-    <thead><tr><th>Unid.</th><th>Empreendimento</th><th>Tipo</th><th>Status</th><th>Cliente</th><th>Contrato</th><th>Assinatura</th><th>Repasse</th><th>Valor</th></tr></thead>
-    <tbody id="tb"></tbody>
-  </table></div>
-  <div class="note">Colunas exatas do escopo: <b>cliente · contrato · status de assinatura · repasse Caixa/COHAPAR</b>. Exportação Excel/PDF e relatórios por empreendimento entram na Fase 2 (aba ao lado).</div>`;
+  <div class="bg-card border border-line rounded-xl2 shadow-card">
+    <div class="p-5 pb-0 flex flex-wrap items-center gap-2">
+      <h3 class="font-bold text-ink text-[14px] mr-auto">Controle de vendas por unidade
+        <span class="badge bg-primary-light text-primary ml-2 !cursor-default">CLIQUE NO STATUS PARA AVANÇAR</span></h3>
+      <select id="fEmp" class="!py-1.5"><option value="">Todos os empreendimentos</option>${EMP.map(e=>`<option>${e.nome}</option>`).join("")}</select>
+      <select id="fSt" class="!py-1.5"><option value="">Todos os status</option>${STS.map(s=>`<option>${s}</option>`).join("")}</select>
+      <select id="fFin" class="!py-1.5"><option value="">Caixa + COHAPAR</option><option>Caixa Econômica</option><option>COHAPAR-PR</option></select>
+      <input type="text" id="fQ" placeholder="Buscar cliente, contrato, unidade…" class="!py-1.5 !w-[210px]">
+    </div>
+    <div class="overflow-x-auto p-2 pb-3">
+      <table class="dt w-full"><thead><tr><th>Unid.</th><th>Empreendimento</th><th>Tipo</th><th>Status</th><th>Cliente</th><th>Contrato</th><th>Assinatura</th><th>Repasse</th><th>Valor</th></tr></thead>
+      <tbody id="tb"></tbody></table>
+    </div>
+    <div class="px-5 py-3.5 border-t border-line text-[12px] text-muted bg-[#F9FAFB] rounded-b-xl2">
+      Colunas exatas do escopo: <b class="text-ink">cliente · contrato · status de assinatura · repasse Caixa/COHAPAR</b>. Exportação Excel/PDF e relatórios por empreendimento entram na Fase 2.
+    </div>
+  </div>`;
+  renderKPIs();
   const tb=document.getElementById("tb");
   function draw(){
     const fe=document.getElementById("fEmp").value, fs=document.getElementById("fSt").value,
           ff=document.getElementById("fFin").value, q=document.getElementById("fQ").value.toLowerCase();
     tb.innerHTML=todas().filter(u=>(!fe||u.emp===fe)&&(!fs||u.st===fs)&&(!ff||u.fin===ff)&&(!q||(u.cliente+" "+u.contrato+" "+u.id+" "+u.emp).toLowerCase().includes(q))).map(u=>`
-    <tr><td class="trend">${u.id}</td><td>${u.emp}</td><td>${u.tipo}</td>
-    <td><span class="st ${STCL[u.st]}" data-id="${u.empId}-${u.id}" title="clique para avançar status">${u.st}</span></td>
-    <td>${u.cliente}</td><td class="trend">${u.contrato}</td><td class="trend">${u.dtAssin}</td>
-    <td style="color:${u.repasse==="—"?"var(--dim)":u.repasse.includes("liberado")?"var(--ok)":"var(--warn)"}">${u.repasse}</td>
-    <td class="trend">${money2(u.valor)}</td></tr>`).join("")||`<tr><td colspan="9" style="color:var(--dim)">Nenhuma unidade corresponde aos filtros.</td></tr>`;
-    tb.querySelectorAll(".st").forEach(el=>el.onclick=()=>{
+    <tr><td class="mono font-semibold text-ink">${u.id}</td><td>${u.emp}</td><td>${u.tipo}</td>
+    <td><button class="badge ${STBADGE[u.st]}" data-id="${u.empId}-${u.id}" title="Avançar status">${u.st}</button></td>
+    <td>${u.cliente}</td><td class="mono">${u.contrato}</td><td class="mono">${u.dtAssin}</td>
+    <td class="${u.repasse==="—"?"text-faint":u.repasse.includes("liberado")?"text-success font-semibold":"text-[#B57E00] font-semibold"}">${u.repasse}</td>
+    <td class="mono font-semibold text-ink">${money2(u.valor)}</td></tr>`).join("")||`<tr><td colspan="9" class="text-center text-faint py-6">Nenhuma unidade corresponde aos filtros.</td></tr>`;
+    tb.querySelectorAll("button.badge").forEach(el=>el.onclick=()=>{
       const [eid,uid]=el.dataset.id.split("-");
       const emp=EMP.find(x=>x.id===eid), u=emp.und.find(x=>x.id===uid);
       const i=STS.indexOf(u.st);
-      if(i<STS.length-1){u.st=STS[i+1];toast(`${u.id} (${emp.nome}): ${STS[i]} → <b>${STS[i+1]}</b>`);}
+      if(i<STS.length-1){u.st=STS[i+1];toast(`${u.id} (${emp.nome.split(" ").slice(-1)[0]}): ${STS[i]} → <b>${STS[i+1]}</b>`);}
       else toast(`${u.id} já atingiu <b>Repasse</b> ✅`);
       renderKPIs();draw();
     });
@@ -221,52 +260,80 @@ function renderVendas(){
   draw();
 }
 function renderEmpreend(){
+  document.getElementById("pgtitle").textContent="Empreendimentos, SPEs e Unidades";
   document.getElementById("main").innerHTML=`
-  <h2>Empreendimentos, SPEs e Unidades <span class="pill">MVP · FASE 1</span></h2>
-  <div class="grid">${EMP.map(e=>{
-    const c={}; STS.forEach(s=>c[s]=0); e.und.forEach(u=>c[u.st]++);
-    return `<div class="card">
-      <h3>${e.nome}</h3>
-      <div class="spe">${e.spe} · CNPJ ${e.cnpj}</div>
-      <div class="meta"><span>📍 ${e.cidade}</span><span>🏗 ${e.torres}</span><span>🧱 ${e.etapa}</span></div>
-      <div class="meta"><span>🏦 Agente: <b>${e.caixa}</b></span><span>🏠 <b>${e.und.length}</b> unidades</span></div>
-      <div class="bar">${STS.filter(s=>c[s]>0).map(s=>`<i style="width:${c[s]/e.und.length*100}%;background:${STCOR[s]}"></i>`).join("")}</div>
-      <div class="legend">${STS.filter(s=>c[s]>0).map(s=>`<span><span class="dot" style="background:${STCOR[s]}"></span>${s} ${c[s]}</span>`).join("")}</div>
-      <div class="fin"><span style="color:var(--mut)">Patrimônio de afetação</span><b class="trend">contabilizado por SPE</b></div>
-    </div>`;}).join("")}
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    ${EMP.map(e=>{
+      const c={}; STS.forEach(s=>c[s]=0); e.und.forEach(u=>c[u.st]++);
+      return `<div class="bg-card border border-line rounded-xl2 shadow-card overflow-hidden">
+        <div class="h-1.5 bg-gradient-to-r from-primary to-purple"></div>
+        <div class="p-5">
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <h3 class="font-bold text-ink text-[15px]">${e.nome}</h3>
+            <span class="badge ${e.etapaCls}">${e.etapa}</span>
+          </div>
+          <div class="text-[12.5px] text-muted mb-4">${e.spe}</div>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-[12.5px] mb-4">
+            <div><span class="text-faint block text-[11px] uppercase tracking-wide">CNPJ</span><span class="mono text-body">${e.cnpj}</span></div>
+            <div><span class="text-faint block text-[11px] uppercase tracking-wide">Local</span><span class="text-body">📍 ${e.cidade}</span></div>
+            <div><span class="text-faint block text-[11px] uppercase tracking-wide">Agente financeiro</span><span class="text-body">🏦 ${e.caixa}</span></div>
+            <div><span class="text-faint block text-[11px] uppercase tracking-wide">Unidades</span><span class="text-body">🏠 ${e.torres} · <b class="text-ink">${e.und.length} un</b></span></div>
+          </div>
+          <div class="bar h-2">${STS.filter(s=>c[s]>0).map(s=>`<i style="width:${c[s]/e.und.length*100}%;background:${STCOR[s]};display:block;height:100%"></i>`).join("")}</div>
+          <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-[11px] text-muted">${STS.filter(s=>c[s]>0).map(s=>`<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:${STCOR[s]}"></span>${s} <b class="text-ink">${c[s]}</b></span>`).join("")}</div>
+          <div class="mt-4 pt-3 border-t border-line flex items-center justify-between text-[12px]">
+            <span class="text-muted">Patrimônio de afetação</span><span class="badge bg-success-light text-success">contabilizado por SPE</span>
+          </div>
+        </div></div>`;}).join("")}
   </div>
-  <div class="note">Cada empreendimento é vinculado à sua <b>SPE com patrimônio de afetação</b> — no sistema real, cadastro completo com contratante, terreno, licenças (preliminar/definitiva), alvarás e evolução física da obra.</div>`;
+  <div class="mt-4 p-4 rounded-xl2 bg-card border border-line border-l-4 !border-l-primary shadow-card text-[13px] text-muted leading-relaxed">
+    Cada empreendimento é vinculado à sua <b class="text-ink">SPE com patrimônio de afetação</b> (Leis 4.591/64 e 10.931/04) — em produção, cadastro completo com contratante, terreno, licenças, alvarás e evolução física da obra por etapa.
+  </div>`;
 }
 function renderFin(){
+  document.getElementById("pgtitle").textContent="Fase 2 · Orçado × Realizado";
   const obras=[
    {o:"Araucária III", fases:[["Fundação",185000,192400],["Estrutura",420000,405300],["Alvenaria",310000,322800],["Instalações",240000,214600]]},
    {o:"Vila Sabiá II", fases:[["Terraplenagem",98000,101300],["Fundação",176000,169800],["Estrutura",380000,302500]]},
    {o:"Barigui I", fases:[["Projeto/licenças",72000,74900],["Terraplenagem",88000,64300]]}];
   document.getElementById("main").innerHTML=`
-  <h2>Orçado × Realizado por Obra e Etapa <span class="pill">FASE 2 · PRÉVIA</span></h2>
-  <div class="grid">${obras.map(o=>{
-    const orc=o.fases.reduce((s,f)=>s+f[1],0), rea=o.fases.reduce((s,f)=>s+f[2],0), desvio=(rea-orc)/orc*100;
-    return `<div class="card">
-      <h3>${o.o}</h3>
-      <div class="fin"><span style="color:var(--mut)">Orçado <b class="trend">${money2(orc)}</b></span><span style="color:var(--mut)">Realizado <b class="trend">${money2(rea)}</b></span></div>
-      <div class="fin"><span style="color:var(--mut)">Desvio</span><b class="trend ${desvio>0?"down":"up"}">${desvio>0?"+":""}${desvio.toFixed(1)}%</b></div>
-      ${o.fases.map(f=>{const d=(f[2]-f[1])/f[1]*100;const w=Math.min(f[1],f[2])/Math.max(f[1],f[2])*100;return `
-      <div style="margin:9px 0 2px">
-        <div class="fin" style="font-size:12px"><span>${f[0]}</span><span class="trend ${d>0?"down":"up"}">${money2(f[1])} → ${money2(f[2])} (${d>0?"+":""}${d.toFixed(1)}%)</span></div>
-        <div class="bar" style="height:8px"><i style="width:${w}%;background:${d>5?"var(--bad)":d>0?"var(--warn)":"var(--ok)"}"></i></div>
+  <div class="flex items-center gap-2 mb-4"><span class="badge bg-purple-light text-purple !cursor-default">FASE 2 · PRÉVIA DO QUE VEM</span></div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    ${obras.map(o=>{
+      const orc=o.fases.reduce((s,f)=>s+f[1],0), rea=o.fases.reduce((s,f)=>s+f[2],0), desvio=(rea-orc)/orc*100;
+      const cls=desvio>5?"text-danger bg-danger-light":desvio>0?"text-[#B57E00] bg-warning-light":"text-success bg-success-light";
+      return `<div class="bg-card border border-line rounded-xl2 shadow-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-ink text-[14.5px]">${o.o}</h3>
+          <span class="badge ${cls}">${desvio>0?"+":""}${desvio.toFixed(1)}% desvio</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-page rounded-lg p-3 border border-line"><div class="text-[10.5px] uppercase tracking-wider text-faint font-semibold">Orçado</div><div class="text-[16px] font-extrabold text-ink mono">${money2(orc)}</div></div>
+          <div class="bg-page rounded-lg p-3 border border-line"><div class="text-[10.5px] uppercase tracking-wider text-faint font-semibold">Realizado</div><div class="text-[16px] font-extrabold text-ink mono">${money2(rea)}</div></div>
+        </div>
+        <div class="space-y-3">${o.fases.map(f=>{const d=(f[2]-f[1])/f[1]*100;const w=Math.min(f[1],f[2])/Math.max(f[1],f[2])*100;
+          const bar=d>5?"bg-danger":d>0?"bg-warning":"bg-success";
+          return `<div>
+            <div class="flex justify-between text-[12px] mb-1"><span class="text-body font-medium">${f[0]}</span><span class="mono ${d>0?"text-danger":"text-success"} font-semibold">${d>0?"+":""}${d.toFixed(1)}%</span></div>
+            <div class="bar"><i style="width:${w}%;display:block" class="${bar}"></i></div>
+            <div class="text-[11px] text-faint mt-.5 mono">${money2(f[1])} → ${money2(f[2])}</div>
+          </div>`;}).join("")}
+        </div>
       </div>`;}).join("")}
-    </div>`;}).join("")}
   </div>
-  <div class="note">Fase 2 completa: lançamento de <b>notas fiscais e compras por centro de custo</b>, comparativo orçado × realizado por etapa, integração com a planilha de custos atual da construtora e <b>relatórios exportáveis em Excel/PDF</b> — sem refazer o que já funciona hoje.</div>`;
+  <div class="mt-4 p-4 rounded-xl2 bg-card border border-line border-l-4 !border-l-purple shadow-card text-[13px] text-muted leading-relaxed">
+    Fase 2 completa: lançamento de <b class="text-ink">notas fiscais e compras por centro de custo</b>, comparativo orçado × realizado por etapa, integração com a planilha de custos atual da construtora e <b class="text-ink">relatórios exportáveis em Excel/PDF</b> — sem refazer o que já funciona hoje.
+  </div>`;
 }
 function toast(msg){const t=document.getElementById("toast");t.innerHTML=msg;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2400);}
-document.getElementById("tabs").addEventListener("click",ev=>{
-  const t=ev.target.closest(".tab");if(!t)return;
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");
+document.body.addEventListener("click",ev=>{
+  const t=ev.target.closest(".sb-item[data-t]");if(!t)return;
+  document.querySelectorAll(".sb-item[data-t]").forEach(x=>x.classList.remove("on"));t.classList.add("on");
   ({vendas:renderVendas,empreend:renderEmpreend,fin:renderFin})[t.dataset.t]();
+  window.scrollTo({top:0});
 });
 setInterval(()=>{document.getElementById("clock").textContent="atualizado "+new Date().toLocaleTimeString("pt-BR");},1000);
-renderKPIs();renderVendas();
+renderVendas();
 </script>
 </body>
 </html>
