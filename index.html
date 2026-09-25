@@ -1,68 +1,118 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
+<html lang="pt-BR"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LeadLens — Teste ao vivo: automação de pedidos</title>
+<title>LeadLens Command Center — Operação E-commerce ao Vivo</title>
 <style>
- body{font-family:'Segoe UI',Arial,sans-serif;background:#f6f8fb;margin:0;padding:24px;color:#1a2333}
- .hdr{background:#12294d;color:#fff;border-radius:14px;padding:26px;margin-bottom:22px}
- .hdr h1{margin:0;font-size:22px} .hdr p{margin:6px 0 0;color:#9fc1ff;font-size:14px}
- .card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 4px 18px rgba(20,40,80,.08);margin-bottom:20px;max-width:760px;margin-left:auto;margin-right:auto}
- label{display:block;font-size:13px;font-weight:600;color:#33445f;margin:12px 0 4px}
- input{width:100%;padding:10px;border:1.5px solid #d4dcea;border-radius:8px;font-size:15px;box-sizing:border-box}
- button{background:#2e6fd8;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px}
- button:hover{background:#1f5cbf}
- .res{margin-top:18px;display:none}
- .pill{display:inline-block;background:#eef3fb;border:1px solid #d4dcea;border-radius:20px;padding:4px 12px;font-size:12px;margin:3px;color:#33445f}
- .pill.p{background:#0f7b4f;color:#fff;border-color:#0f7b4f}
- .resp{background:#f0faf4;border-left:4px solid #0f7b4f;padding:12px;border-radius:6px;margin-top:12px;font-size:14px}
- .note{font-size:12px;color:#8a97ad;margin-top:14px}
- code{background:#eef3fb;padding:2px 6px;border-radius:4px;font-size:12px}
-</style>
-</head>
-<body>
-<div class="hdr"><h1>🛒 Teste ao vivo: triagem automática de pedidos</h1>
-<p>Demonstração funcional do padrão de automação LeadLens — este formulário chama um webhook REAL em produção no nosso servidor de automação (n8n).</p></div>
-
-<div class="card">
-<h2 style="margin-top:0">Simule um pedido da sua loja</h2>
-<label>Número do pedido</label><input id="id" value="PED-8841">
-<label>Nome do cliente</label><input id="cliente" value="Maria Silva">
-<label>Valor total (R$)</label><input id="total" type="number" value="1250.90">
-<label>CEP de entrega</label><input id="cep" value="80010-010">
-<label><input type="checkbox" id="primeira" checked style="width:auto"> Primeira compra deste cliente</label>
-<button onclick="enviar()">⚡ Processar pedido no webhook ao vivo</button>
-<div class="res" id="res">
- <h3 style="margin:0 0 10px">Resultado da automação (resposta do webhook real):</h3>
- <div id="pills"></div>
- <div class="resp" id="resp"></div>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0b1220;color:#e8eefc;min-height:100vh;padding:20px}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.hdr h1{font-size:20px;font-weight:800}
+.hdr h1 span{color:#5b9dff}
+.live{display:flex;align-items:center;gap:8px;background:#12294d;border-radius:20px;padding:8px 16px;font-size:13px}
+.dot{width:10px;height:10px;border-radius:50%;background:#00e07b;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:16px;text-align:center}
+.kpi .v{font-size:26px;font-weight:800;color:#5b9dff}
+.kpi .v.g{color:#00e07b}.kpi .v.r{color:#ffd166}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7288b3;margin-top:4px}
+.lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.lane{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:10px;min-height:340px}
+.lane h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7288b3;text-align:center;padding-bottom:8px;border-bottom:1px solid #1d2f52;margin-bottom:10px}
+.card{background:#16223e;border:1px solid #263c66;border-radius:10px;padding:10px;margin-bottom:8px;font-size:12px;animation:slidein .5s ease}
+@keyframes slidein{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.card b{color:#cfe0ff;font-size:12.5px}
+.card .money{color:#00e07b;font-weight:700}
+.tag{display:inline-block;font-size:10px;border-radius:10px;padding:2px 8px;margin-top:6px;margin-right:4px}
+.tag.p{background:#00e07b;color:#06251a;font-weight:700}
+.tag.r{background:#ffd166;color:#4a3800}
+.tag.a{background:#263c66;color:#9fc1ff}
+.auto{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.auto button{background:#2e6fd8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:13px}
+.auto button.stop{background:#a8324d}
+.auto .n{font-size:12px;color:#7288b3}
+.manual{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:14px;margin-bottom:18px}
+.manual input{background:#0b1220;border:1px solid #263c66;color:#e8eefc;border-radius:8px;padding:9px;font-size:13px;margin-right:8px}
+.manual label{font-size:11px;color:#7288b3;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.frow{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.frow div{flex:1;min-width:130px}
+.foot{text-align:center;font-size:11px;color:#51658f;margin-top:14px}
+@media(max-width:900px){.lanes{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<div class="hdr">
+ <h1>⚡ LeadLens <span>Command Center</span> — Operação E-commerce ao vivo</h1>
+ <div class="live"><span class="dot"></span> AO VIVO · webhook de produção</div>
 </div>
-<p class="note">Endpoint: <code>POST https://n8n.mosaahmad.com/webhook/poc-pedido</code> · integrável com Shopify, WooCommerce, Nuvemshop, Bling ou qualquer loja via webhook.</p>
+<div class="kpis">
+ <div class="kpi"><div class="v" id="k_total">0</div><div class="l">Pedidos processados</div></div>
+ <div class="kpi"><div class="v g" id="k_min">0</div><div class="l">Minutos economizados</div></div>
+ <div class="kpi"><div class="v g" id="k_reais">R$ 0</div><div class="l">Economia operacional</div></div>
+ <div class="kpi"><div class="v r" id="k_prio">0</div><div class="l">Fila prioritária</div></div>
 </div>
-
+<div class="manual">
+ <div class="frow">
+  <div><label>Pedido ID</label><input id="oid" value="PED-9001"></div>
+  <div><label>Cliente</label><input id="oc" value="Maria Silva"></div>
+  <div><label>Total (R$)</label><input id="ot" type="number" value="1250.90"></div>
+  <div><label>CEP</label><input id="oce" value="80010-010"></div>
+  <div><label>&nbsp;</label><button onclick="enviarManual()">🚀 Enviar pedido real</button></div>
+ </div>
+</div>
+<div class="auto">
+ <button id="btnauto" onclick="toggleAuto()">▶ Iniciar simulação ao vivo (fluxo contínuo)</button>
+ <span class="n" id="autos">cada pedido é processado de verdade pelo webhook de produção</span>
+</div>
+<div class="lanes">
+ <div class="lane"><h3>1 · Recebido</h3><div id="l0"></div></div>
+ <div class="lane"><h3>2 · Triagem IA</h3><div id="l1"></div></div>
+ <div class="lane"><h3>3 · Estoque</h3><div id="l2"></div></div>
+ <div class="lane"><h3>4 · Financeiro</h3><div id="l3"></div></div>
+ <div class="lane"><h3>5 · Resposta enviada</h3><div id="l4"></div></div>
+</div>
+<div class="foot">Todos os pedidos passam por https://n8n.mosaahmad.com/webhook/poc-order-v2 — automação real, não simulação desenhada. · LeadLens — Mosa Ahmad, Senior Integration Engineer</div>
 <script>
-async function enviar(){
- const btn = document.querySelector('button');
- btn.textContent = '⏳ processando...'; btn.disabled = true;
- const payload = { id: id.value, cliente: cliente.value, total: +total.value,
-   itens: 3, primeira_compra: primeira.checked, cep: cep.value };
- try {
-   const r = await fetch('https://n8n.mosaahmad.com/webhook/poc-pedido', {method:'POST',
-     headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
-   const j = await r.json();
-   document.getElementById('res').style.display='block';
-   document.getElementById('pills').innerHTML =
-     `<span class="pill">pedido: <b>${j.pedido}</b></span>` +
-     `<span class="pill">risco: <b>${j.risco}</b></span>` +
-     `<span class="pill p">prioridade: <b>${j.prioridade}</b></span>` +
-     j.acoes.map(a=>`<span class="pill">⚙ ${a}</span>`).join('');
-   document.getElementById('resp').innerHTML = '<b>Resposta enviada ao cliente:</b><br>' + j.resposta_cliente;
- } catch(e) {
-   document.getElementById('res').style.display='block';
-   document.getElementById('resp').textContent = 'Erro: ' + e.message;
- }
- btn.textContent = '⚡ Processar pedido no webhook ao vivo'; btn.disabled = false;
+const STAGES=['recebido','triagem-ia','estoque','financeiro','resposta-enviada'];
+let auto=null, tick=0;
+function fmt(n){return n.toLocaleString('pt-BR');}
+async function refresh(){
+ try{
+  const r=await fetch('https://n8n.mosaahmad.com/webhook/poc-pipeline');
+  const d=await r.json();
+  k_total.textContent=fmt(d.total); k_min.textContent=fmt(d.minutos_economizados);
+  k_reais.textContent='R$ '+fmt(d.reais_economizados); k_prio.textContent=d.prioritarios;
+  for(let s=0;s<5;s++) document.getElementById('l'+s).innerHTML='';
+  d.pedidos.forEach((p,i)=>{
+   const elapsed=(Date.now()- (p.stages[4].at-1400))/1000;
+   const stage=Math.min(4,Math.floor(elapsed/1.2)%5);
+   const done = elapsed>6;
+   if(done && s!==4) return;
+   const card=document.createElement('div');card.className='card';
+   const stageIdx = done?4:Math.min(4,Math.floor((elapsed/1.2))%5);
+   if(s!==stageIdx) return;
+   card.innerHTML='<b>'+p.id+'</b> — '+p.cliente+'<br><span class="money">R$ '+fmt(p.total)+'</span><br>'+
+    (p.prioridade==='priority'?'<span class="tag p">PRIORITY</span>':'')+
+    (p.risco!=='normal'?'<span class="tag r">'+p.risco+'</span>':'')+
+    p.acoes.map(a=>'<span class="tag a">⚙ '+a+'</span>').join('')+
+    '<br><span style="color:#51658f;font-size:10px">'+p.resposta+'</span>';
+   document.getElementById('l'+s).appendChild(card);
+  });
+ }catch(e){}
 }
-</script>
-</body></html>
+async function enviarManual(){
+ const payload={id:oid.value,cliente:oc.value,total:+ot.value,itens:3,primeira_compra:false,cep:oce.value,origem:'manual'};
+ await fetch('https://n8n.mosaahmad.com/webhook/poc-order-v2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ refresh();
+}
+const NOMES=['Maria Silva','João Souza','Ana Costa','Pedro Lima','Carla Mendes','Lucas Rocha','Bia Fernandes','Rafa Torres'];
+function simOrder(){
+ const i=++tick;
+ const payload={id:'PED-'+(9010+i),cliente:NOMES[i%NOMES.length],total:Math.round(80+Math.random()*4200),
+  itens:1+Math.floor(Math.random()*7),primeira_compra:Math.random()<.3,cep:'8'+String(1000000+Math.floor(Math.random()*8999999)).slice(0,8).replace(/(\d{5})(\d{3})/,'$1-$2'),origem:'simulacao'};
+ fetch('https://n8n.mosaahmad.com/webhook/poc-order-v2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(()=>refresh());
+}
+function toggleAuto(){
+ if(auto){clearInterval(auto);auto=null;btnauto.textContent='▶ Iniciar simulação ao vivo (fluxo contínuo)';btnauto.classList.remove('stop');}
+ else{auto=setInterval(simOrder,2500);btnauto.textContent='⏸ Parar simulação';btnauto.classList.add('stop');simOrder();}
+}
+refresh();setInterval(refresh,2000);
+</script></body></html>
