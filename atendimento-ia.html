@@ -86,6 +86,7 @@ tailwind.config={theme:{extend:{
           <div class="m-sys">🔐 Conversa fictícia de demonstração — nenhum dado real é coletado (LGPD)</div>
         </div>
         <div class="chips" id="chips">
+          <span class="chip">oi</span>
           <span class="chip">Quanto custa o plano?</span>
           <span class="chip">Quero agendar um horário</span>
           <span class="chip">Meu pedido atrasou</span>
@@ -164,7 +165,7 @@ async function enviar(msg){
   addMsg(msg,'out');
   const t=addTyping();
   try{
-    const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:msg,cliente:'Visitante demo'})});
+    const r=await fetch(URL_,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg:msg,cliente:'Visitante demo',demo:'06'})});
     const d=await r.json();
     setTimeout(()=>{t.remove();addMsg(d.resposta,'in');addEvent(d,msg);},600+Math.random()*700);
   }catch(e){
@@ -174,7 +175,7 @@ async function enviar(msg){
 document.getElementById('send').onclick=()=>{const v=inp.value.trim();if(v){inp.value='';enviar(v);}};
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value.trim();if(v){inp.value='';enviar(v);}}});
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>enviar(c.textContent));
-fetch('https://n8n.mosaahmad.com/webhook/poc-atendimento-stats').then(r=>r.json()).then(s=>{
+fetch('https://n8n.mosaahmad.com/webhook/poc-atendimento-stats?demo=06').then(r=>r.json()).then(s=>{
   document.getElementById('s_total').textContent=s.total;
   document.getElementById('s_res').textContent=s.resolvidosSemHumano;
   document.getElementById('s_hum').textContent=s.encaminhadosHumano;
