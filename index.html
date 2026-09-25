@@ -1,124 +1,131 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8">
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LeadLens Command Center — Operação E-commerce ao Vivo</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#0b1220;color:#e8eefc;min-height:100vh;padding:20px}
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
-.hdr h1{font-size:20px;font-weight:800}
-.hdr h1 span{color:#5b9dff}
-.live{display:flex;align-items:center;gap:8px;background:#12294d;border-radius:20px;padding:8px 16px;font-size:13px}
-.dot{width:10px;height:10px;border-radius:50%;background:#00e07b;animation:pulse 1.4s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.kpi{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:16px;text-align:center}
-.kpi .v{font-size:26px;font-weight:800;color:#5b9dff}
-.kpi .v.g{color:#00e07b}.kpi .v.r{color:#ffd166}
-.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7288b3;margin-top:4px}
-.lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
-.lane{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:10px;min-height:340px}
-.lane h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7288b3;text-align:center;padding-bottom:8px;border-bottom:1px solid #1d2f52;margin-bottom:10px}
-.card{background:#16223e;border:1px solid #263c66;border-radius:10px;padding:10px;margin-bottom:8px;font-size:12px;animation:slidein .5s ease}
-@keyframes slidein{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.card b{color:#cfe0ff;font-size:12.5px}
-.card .money{color:#00e07b;font-weight:700}
-.tag{display:inline-block;font-size:10px;border-radius:10px;padding:2px 8px;margin-top:6px;margin-right:4px}
-.tag.p{background:#00e07b;color:#06251a;font-weight:700}
-.tag.r{background:#ffd166;color:#4a3800}
-.tag.a{background:#263c66;color:#9fc1ff}
-.auto{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-.auto button{background:#2e6fd8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:13px}
-.auto button.stop{background:#a8324d}
-.auto .n{font-size:12px;color:#7288b3}
-.manual{background:#111c33;border:1px solid #1d2f52;border-radius:12px;padding:14px;margin-bottom:18px}
-.manual input{background:#0b1220;border:1px solid #263c66;color:#e8eefc;border-radius:8px;padding:9px;font-size:13px;margin-right:8px}
-.manual label{font-size:11px;color:#7288b3;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
-.frow{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
-.frow div{flex:1;min-width:130px}
-.foot{text-align:center;font-size:11px;color:#51658f;margin-top:14px}
-@media(max-width:900px){.lanes{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}}
-</style></head><body>
-<div class="hdr">
- <h1>⚡ LeadLens <span>Command Center</span> — Operação E-commerce ao vivo</h1>
- <div class="live"><span class="dot"></span> AO VIVO · webhook de produção</div>
-</div>
-<div class="kpis">
- <div class="kpi"><div class="v" id="k_total">0</div><div class="l">Pedidos processados</div></div>
- <div class="kpi"><div class="v g" id="k_min">0</div><div class="l">Minutos economizados</div></div>
- <div class="kpi"><div class="v g" id="k_reais">R$ 0</div><div class="l">Economia operacional</div></div>
- <div class="kpi"><div class="v r" id="k_prio">0</div><div class="l">Fila prioritária</div></div>
-</div>
-<div class="manual">
- <div class="frow">
-  <div><label>Pedido ID</label><input id="oid" value="PED-9001"></div>
-  <div><label>Cliente</label><input id="oc" value="Maria Silva"></div>
-  <div><label>Total (R$)</label><input id="ot" type="number" value="1250.90"></div>
-  <div><label>CEP</label><input id="oce" value="80010-010"></div>
-  <div><label>&nbsp;</label><button onclick="enviarManual()">🚀 Enviar pedido real</button></div>
- </div>
-</div>
-<div class="auto">
- <button id="btnauto" onclick="toggleAuto()">▶ Iniciar simulação ao vivo (fluxo contínuo)</button>
- <span class="n" id="autos">cada pedido é processado de verdade pelo webhook de produção</span>
-</div>
-<div class="lanes">
- <div class="lane"><h3>1 · Recebido</h3><div id="l0"></div></div>
- <div class="lane"><h3>2 · Triagem IA</h3><div id="l1"></div></div>
- <div class="lane"><h3>3 · Estoque</h3><div id="l2"></div></div>
- <div class="lane"><h3>4 · Financeiro</h3><div id="l3"></div></div>
- <div class="lane"><h3>5 · Resposta enviada</h3><div id="l4"></div></div>
-</div>
-<div class="foot">Todos os pedidos passam por https://n8n.mosaahmad.com/webhook/poc-order-v2 — automação real, não simulação desenhada. · LeadLens — Mosa Ahmad, Senior Integration Engineer</div>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
-const STAGES=['recebido','triagem-ia','estoque','financeiro','resposta-enviada'];
-let auto=null, tick=0;
-function fmt(n){return n.toLocaleString('pt-BR');}
-async function refresh(){
- try{
-  const r=await fetch('https://n8n.mosaahmad.com/webhook/poc-pipeline');
-  const d=await r.json();
-  k_total.textContent=fmt(d.total); k_min.textContent=fmt(d.minutos_economizados);
-  k_reais.textContent='R$ '+fmt(d.reais_economizados); k_prio.textContent=d.prioritarios;
-  const lanes=[];for(let s=0;s<5;s++)lanes.push([]);
-  d.pedidos.forEach(p=>{
-   const doneAt=p.stages[4].at;
-   const elapsed=(Date.now()-p.stages[0].at)/1000;
-   let idx;
-   if(elapsed<0.5)idx=0;else if(elapsed<1.5)idx=1;else if(elapsed<2.5)idx=2;
-   else if(elapsed<3.5)idx=3;else idx=4;
-   const lanes_html=lanes[idx];
-   lanes_html.push(p);
-  });
-  for(let s=0;s<5;s++){
-   const el=document.getElementById('l'+s);el.innerHTML='';
-   (lanes[s]||[]).forEach(p=>{
-    const card=document.createElement('div');card.className='card';
-    card.innerHTML='<b>'+p.id+'</b> — '+p.cliente+'<br><span class="money">R$ '+fmt(p.total)+'</span><br>'+
-     (p.prioridade==='priority'?'<span class="tag p">PRIORITY</span>':'')+
-     (p.risco!=='normal'?'<span class="tag r">'+p.risco+'</span>':'')+
-     (p.acoes||[]).map(a=>'<span class="tag a">⚙ '+a+'</span>').join('')+
-     '<br><span style="color:#51658f;font-size:10px">'+(p.resposta||'')+'</span>';
-    el.appendChild(card);
-   });
-  }
- }catch(e){console.log('refresh err',e)}
+tailwind.config={theme:{extend:{
+  fontFamily:{sans:['Inter','Segoe UI','Arial','sans-serif']},
+  colors:{primary:'#009EF7','primary-light':'#E1F0FF',ink:'#181C32',body:'#5E6278',muted:'#7E8299',faint:'#A1A5B7',
+    line:'#EFF2F5',page:'#F5F8FA',success:'#50CD89','success-light':'#E8FFF3',warning:'#FFC700','warning-light':'#FFF8DD',
+    danger:'#F1416C','danger-light':'#FFE7E3',purple:'#7239EA','purple-light':'#F3E7FF',teal:'#0BB7C4','teal-light':'#DCFBF4'},
+  boxShadow:{card:'0 0 20px 0 rgba(76,87,125,0.02)',card2:'0 0 30px 0 rgba(76,87,125,0.06)'},
+  borderRadius:{xl2:'0.875rem'}
+}}}
+</script>
+<style>
+  body{-webkit-font-smoothing:antialiased}
+  .badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:.475rem;padding:.28rem .65rem;font-size:.74rem;font-weight:600;line-height:1}
+  input{background:#fff;border:1px solid #EFF2F5;border-radius:.475rem;padding:.5rem .75rem;font-size:.83rem;color:#5E6278;outline:none}
+  input:focus{border-color:#009EF7}
+  .mono{font-variant-numeric:tabular-nums}
+  .lane{min-height:330px}
+  .card-o{background:#fff;border:1px solid #EFF2F5;border-radius:.75rem;padding:10px;margin-bottom:8px;font-size:12px;animation:slidein .5s ease;box-shadow:0 0 20px 0 rgba(76,87,125,.02)}
+  @keyframes slidein{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#D5D8E1;border-radius:9px}
+</style>
+</head>
+<body class="bg-page text-body font-sans min-h-screen">
+<header class="bg-white border-b border-line sticky top-0 z-20">
+ <div class="max-w-[1400px] mx-auto flex items-center gap-3 px-4 sm:px-6 h-[66px]">
+   <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-purple text-white flex items-center justify-center font-extrabold text-sm shadow-card2">LL</div>
+   <div class="min-w-0">
+     <div class="text-[11px] text-faint leading-none mb-.5">Prova de conceito / <span class="text-muted">automação real de pedidos</span></div>
+     <h1 class="font-bold text-ink text-[16px] leading-tight truncate">LeadLens Command Center — e-commerce ao vivo</h1>
+   </div>
+   <span class="ml-auto hidden sm:inline-flex items-center gap-1.5 text-[12px] bg-success-light text-success px-2.5 py-1.5 rounded-lg font-semibold">
+     <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>AO VIVO · webhook de produção</span>
+ </div>
+</header>
+
+<main class="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
+  <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+    <div class="bg-white border border-line rounded-xl2 shadow-card p-4"><div class="text-[24px] font-extrabold text-ink mono" id="k_total">0</div><div class="text-[11px] uppercase tracking-wider text-faint font-semibold">Pedidos processados</div></div>
+    <div class="bg-white border border-line rounded-xl2 shadow-card p-4"><div class="text-[24px] font-extrabold text-success mono" id="k_min">0</div><div class="text-[11px] uppercase tracking-wider text-faint font-semibold">Minutos economizados</div></div>
+    <div class="bg-white border border-line rounded-xl2 shadow-card p-4"><div class="text-[24px] font-extrabold text-success mono" id="k_reais">R$ 0</div><div class="text-[11px] uppercase tracking-wider text-faint font-semibold">Economia operacional</div></div>
+    <div class="bg-white border border-line rounded-xl2 shadow-card p-4"><div class="text-[24px] font-extrabold text-purple mono" id="k_prio">0</div><div class="text-[11px] uppercase tracking-wider text-faint font-semibold">Fila prioritária</div></div>
+  </div>
+
+  <div class="bg-white border border-line rounded-xl2 shadow-card p-5 mb-5">
+    <div class="flex flex-wrap items-end gap-3 mb-3">
+      <div><label class="text-[11px] uppercase tracking-wider text-faint font-semibold block mb-1">Pedido ID</label><input id="oid" value="PED-9001"></div>
+      <div><label class="text-[11px] uppercase tracking-wider text-faint font-semibold block mb-1">Cliente</label><input id="oc" value="Maria Silva"></div>
+      <div><label class="text-[11px] uppercase tracking-wider text-faint font-semibold block mb-1">Total (R$)</label><input id="ot" type="number" value="1250.90"></div>
+      <div><label class="text-[11px] uppercase tracking-wider text-faint font-semibold block mb-1">CEP</label><input id="oce" value="80010-010"></div>
+      <button onclick="enviarManual()" class="bg-primary hover:brightness-95 text-white font-semibold rounded-lg px-5 py-2.5 text-[13px]">Enviar pedido real</button>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <button id="btnauto" onclick="toggleAuto()" class="border border-line bg-page hover:bg-line text-ink font-semibold rounded-lg px-4 py-2 text-[13px]">▶ Simulação contínua</button>
+      <span class="text-[12px] text-faint">cada pedido é processado de verdade pelo webhook de produção</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3" id="lanes"></div>
+</main>
+
+<footer class="border-t border-line bg-white py-4 text-center text-[12px] text-faint">
+  Pedidos reais via <b class="text-muted">https://n8n.mosaahmad.com/webhook/poc-pedido</b> — automação em produção, não desenho ·
+  <b class="text-muted">Prototype by Mosa Ahmad — Senior Integration Engineer</b>
+</footer>
+
+<script>
+"use strict";
+const STAGES=[
+ ['Recebido','bg-primary-light text-primary'],
+ ['Triagem IA','bg-purple-light text-purple'],
+ ['Estoque','bg-teal-light text-teal'],
+ ['Financeiro','bg-warning-light text-[#B57E00]'],
+ ['Resposta enviada','bg-success-light text-success']];
+let g={orders:[],min:0,reais:0,prio:0};
+document.getElementById('lanes').innerHTML=STAGES.map((s,i)=>
+ `<div class="bg-white border border-line rounded-xl2 shadow-card p-3 lane">
+   <h3 class="badge ${s[1]} mb-2">${i+1} · ${s[0]}</h3><div id="l${i}"></div></div>`).join('');
+const fmt=n=>n.toLocaleString('pt-BR');
+function kpis(){
+  document.getElementById('k_total').textContent=g.orders.length;
+  document.getElementById('k_min').textContent=fmt(g.min);
+  document.getElementById('k_reais').textContent='R$ '+fmt(g.reais);
+  document.getElementById('k_prio').textContent=g.prio;
 }
-async function enviarManual(){
- const payload={id:oid.value,cliente:oc.value,total:+ot.value,itens:3,primeira_compra:false,cep:oce.value,origem:'manual'};
- await fetch('https://n8n.mosaahmad.com/webhook/poc-order-v2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
- refresh();
+function pushCard(o,stage){
+  const el=document.createElement('div');el.className='card-o';
+  el.innerHTML='<b class="text-ink">'+o.id+'</b> · '+o.cliente+'<br>'+
+   '<span class="mono text-body">R$ '+fmt(o.total)+'</span> · CEP '+o.cep+'<br>'+
+   o.tags.map(t=>'<span class="badge mt-1 '+(t==='prioridade'?'bg-danger-light text-danger':t==='risco'?'bg-warning-light text-[#B57E00]':'bg-primary-light text-primary')+'">'+t+'</span>').join(' ');
+  const lane=document.getElementById('l'+stage);
+  if(lane){lane.prepend(el);while(lane.children.length>7)lane.lastChild.remove();}
 }
-const NOMES=['Maria Silva','João Souza','Ana Costa','Pedro Lima','Carla Mendes','Lucas Rocha','Bia Fernandes','Rafa Torres'];
-function simOrder(){
- const i=++tick;
- const payload={id:'PED-'+(9010+i),cliente:NOMES[i%NOMES.length],total:Math.round(80+Math.random()*4200),
-  itens:1+Math.floor(Math.random()*7),primeira_compra:Math.random()<.3,cep:'8'+String(1000000+Math.floor(Math.random()*8999999)).slice(0,8).replace(/(\d{5})(\d{3})/,'$1-$2'),origem:'simulacao'};
- fetch('https://n8n.mosaahmad.com/webhook/poc-order-v2',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(()=>refresh());
+async function process(o){
+  g.orders.push(o);pushCard(o,0);kpis();
+  try{
+    const r=await fetch('https://n8n.mosaahmad.com/webhook/poc-pedido',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+    const d=await r.json();
+    o.tags=d.tags||d.acoes||['processado'];
+    if(String(o.tags).includes('prioridade'))g.prio++;
+    for(let s=1;s<5;s++){await new Promise(res=>setTimeout(res,420));pushCard(o,s);}
+    g.min+=6+(o.total>1000?4:0);g.reais+=8+(o.total>1000?6:0);kpis();
+  }catch(e){o.tags=['erro rede'];pushCard(o,4);}
 }
+function enviarManual(){
+  process({id:document.getElementById('oid').value,cliente:document.getElementById('oc').value,
+    total:parseFloat(document.getElementById('ot').value),cep:document.getElementById('oce').value,tags:['novo']});
+}
+let auto=null,n=0;
 function toggleAuto(){
- if(auto){clearInterval(auto);auto=null;btnauto.textContent='▶ Iniciar simulação ao vivo (fluxo contínuo)';btnauto.classList.remove('stop');}
- else{auto=setInterval(simOrder,2500);btnauto.textContent='⏸ Parar simulação';btnauto.classList.add('stop');simOrder();}
+  if(auto){clearInterval(auto);auto=null;document.getElementById('btnauto').textContent='▶ Simulação contínua';return;}
+  document.getElementById('btnauto').textContent='⏸ Parar simulação';
+  auto=setInterval(()=>{n++;
+    const nomes=['J. Souza','C. Lima','R. Alves','P. Rocha','M. Campos','T. Nunes','B. Freitas'];
+    process({id:'PED-'+(9100+n),cliente:nomes[n%7],total:Math.round(90+Math.random()*2200),
+      cep:'80'+String(100+n%80).slice(0,4)+'-010',tags:['novo']});
+  },2600);
 }
-refresh();setInterval(refresh,2000);
-</script></body></html>
+kpis();
+</script>
+</body>
+</html>
