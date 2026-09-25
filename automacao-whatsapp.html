@@ -65,11 +65,11 @@ tailwind.config={theme:{extend:{
   <main class="max-w-[1200px] mx-auto px-4 sm:px-6 py-6">
     <!-- hero card -->
     <div class="bg-card border border-line rounded-xl2 shadow-card p-5 sm:p-6 mb-5 border-l-4 !border-l-primary">
-      <p class="text-[14.5px] leading-relaxed max-w-[880px]">O que separa um chatbot amador de uma solução de produção: motor rodando em produção (n8n) com WhatsApp Cloud API <b class="text-ink">oficial</b>, classificação de intenção com NLP, fluxos de conversa configuráveis, regra de confiança mínima — <b class="text-ink">nunca responde o que não sabe, zero alucinação</b> — e escalonamento humano com contexto completo. Este chat está ligado no motor de produção agora: envie mensagens, tente quebrar.</p>
+      <p class="text-[14.5px] leading-relaxed max-w-[880px]">O que separa um chatbot amador de uma solução de produção: motor rodando em produção (n8n) com WhatsApp Cloud API <b class="text-ink">oficial</b>, classificação de intenção com NLP, fluxos de conversa configuráveis, regra de confiança mínima — <b class="text-ink">só responde acima do limiar; fora disso, humano com contexto</b> — e escalonamento humano completo. Este chat está ligado no motor de produção agora: envie mensagens, tente quebrar.</p>
       <div class="mt-4 flex flex-wrap gap-2">
         <span class="badge bg-primary-light text-primary">NLP com regra de confiança mínima</span>
-        <span class="badge bg-teal-light text-teal">Fila com reexponenciação e zero perda</span>
-        <span class="badge bg-success-light text-success">Zero alucinação por design</span>
+        <span class="badge bg-teal-light text-teal">Fila com retentativa automática (backoff exponencial)</span>
+        <span class="badge bg-success-light text-success">Fallback honesto — não inventa resposta</span>
         <span class="badge bg-purple-light text-purple">Handoff humano com contexto</span>
         <span class="badge bg-teal-light text-teal">LGPD: nenhum dado real coletado</span>
       </div>
